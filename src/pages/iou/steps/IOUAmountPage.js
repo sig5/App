@@ -212,9 +212,7 @@ class IOUAmountPage extends React.Component {
             });
         }
 
-        /**
-        * Update the selection of Native element.
-        */
+        // Update selection of the Native element.
         this.textInput.setNativeProps({selection: this.state.selection});
     }
 
