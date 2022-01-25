@@ -78,9 +78,10 @@ class IOUAmountPage extends React.Component {
         this.updateAmount = this.updateAmount.bind(this);
         this.stripCommaFromAmount = this.stripCommaFromAmount.bind(this);
         this.focusTextInput = this.focusTextInput.bind(this);
-
+        this.onSelectionChange = this.onSelectionChange.bind(this);
         this.state = {
             amount: props.selectedAmount,
+            selection: {start: props.selectedAmount.length, end: props.selectedAmount.length},
         };
     }
 
@@ -94,6 +95,14 @@ class IOUAmountPage extends React.Component {
         }
 
         this.focusTextInput();
+    }
+
+    /**
+     * Callback function to update UI-triggered selection changes in state.
+     * @param {*} e
+     */
+    onSelectionChange(e) {
+        this.setState({selection: e.nativeEvent.selection});
     }
 
     /**
@@ -149,6 +158,7 @@ class IOUAmountPage extends React.Component {
         return amount.replace(/,/g, '');
     }
 
+
     /**
      * Update amount with number or Backspace pressed for BigNumberPad.
      * Validate new amount with decimal number regex up to 6 digits and 2 decimal digit to enable Next button
@@ -157,19 +167,55 @@ class IOUAmountPage extends React.Component {
      */
     updateAmountNumberPad(key) {
         // Backspace button is pressed
-        if (key === '<' || key === 'Backspace') {
-            if (this.state.amount.length > 0) {
+        const {start, end} = this.state.selection;
+
+        // Backspace button is pressed
+        if (key === '<' || (key === 'Backspace' && this.state.amount.length > 0)) {
+            if (end === 0) {
+                return;
+            }
+            const amount = start === end
+                ? this.state.amount.slice(0, start - 1) + this.state.amount.slice(end)
+                : this.state.amount.slice(0, start) + this.state.amount.slice(end);
+
+            if (!this.validateAmount(amount)) {
+                return;
+            }
+
+            if (start === end && start > 0) {
                 this.setState(prevState => ({
-                    amount: prevState.amount.slice(0, -1),
+                    amount,
+                    selection: {
+                        start: prevState.selection.start - 1,
+                        end: prevState.selection.end - 1,
+                    },
+                }));
+            } else {
+                this.setState(prevState => ({
+                    amount,
+                    selection: {
+                        start: prevState.selection.start,
+                        end: prevState.selection.end,
+                    },
                 }));
             }
-            return;
+        } else {
+            this.setState((prevState) => {
+                const amount = `${prevState.amount.slice(0, start)}${key}${prevState.amount.slice(end)}`;
+                return this.validateAmount(amount) ? {
+                    amount: this.stripCommaFromAmount(amount),
+                    selection: {
+                        start: prevState.selection.start + 1,
+                        end: prevState.selection.end + 1,
+                    },
+                } : prevState;
+            });
         }
 
-        this.setState((prevState) => {
-            const amount = `${prevState.amount}${key}`;
-            return this.validateAmount(amount) ? {amount: this.stripCommaFromAmount(amount)} : prevState;
-        });
+        /**
+        * Update the selection of Native element.
+        */
+        this.textInput.setNativeProps({selection: this.state.selection});
     }
 
     /**
@@ -236,6 +282,7 @@ class IOUAmountPage extends React.Component {
                         value={formattedAmount}
                         placeholder={this.props.numberFormat(0)}
                         keyboardType={CONST.KEYBOARD_TYPE.NUMBER_PAD}
+                        onSelectionChange={this.onSelectionChange}
                     />
                 </View>
                 <View style={[styles.w100, styles.justifyContentEnd]}>
