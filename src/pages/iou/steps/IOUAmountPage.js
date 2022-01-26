@@ -198,7 +198,9 @@ class IOUAmountPage extends React.Component {
             // Block updates need only change in amount
             return this.setState((prevState) => {
                 const amount = prevState.amount.slice(0, start) + prevState.amount.slice(end);
-                return {amount};
+                const newStart = prevState.selection.start;
+                const newEnd = prevState.selection.start;
+                return {selection: {start: newStart, end: newEnd}, amount};
             });
         }
         this.setState((prevState) => {
