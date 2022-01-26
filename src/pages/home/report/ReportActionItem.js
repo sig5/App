@@ -24,6 +24,7 @@ import * as ReportActionContextMenu from './ContextMenu/ReportActionContextMenu'
 import * as ContextMenuActions from './ContextMenu/ContextMenuActions';
 import {withReportActionsDrafts} from '../../../components/OnyxProvider';
 import * as ReportUtils from '../../../libs/reportUtils';
+import ReportActionItemCreated from './ReportActionItemCreated';
 
 const propTypes = {
     /** The ID of the report this action is on. */
@@ -117,6 +118,21 @@ class ReportActionItem extends Component {
     }
 
     render() {
+        const isRoomHeader = (this.props.action.actionName === CONST.REPORT.ACTIONS.TYPE.CREATED);
+        if (isRoomHeader) {
+            const isChatRoom = ReportUtils.isChatRoom(this.props.report);
+            return (
+                <View
+                    style={StyleUtils.getReportActionItemStyle(
+                    )}
+                >
+                    <ReportActionItemCreated
+                        report={this.props.report}
+                        isChatRoom={isChatRoom}
+                    />
+                </View>
+            );
+        }
         let children;
         if (this.props.action.actionName === CONST.REPORT.ACTIONS.TYPE.IOU) {
             children = (
@@ -126,7 +142,7 @@ class ReportActionItem extends Component {
                     isMostRecentIOUReportAction={this.props.isMostRecentIOUReportAction}
                 />
             );
-        } else if (this.props.action.actionName === CONST.REPORT.ACTIONS.TYPE.ADDCOMMENT) {
+        } else {
             children = !this.props.draftMessage
                 ? <ReportActionItemMessage action={this.props.action} />
                 : (
@@ -138,8 +154,6 @@ class ReportActionItem extends Component {
                             ref={el => this.textInput = el}
                     />
                 );
-        } else {
-            children = <ReportActionItemCreated/>
         }
         return (
             <PressableWithSecondaryInteraction
@@ -163,6 +177,7 @@ class ReportActionItem extends Component {
                                     || this.props.draftMessage,
                                 )}
                             >
+
                                 {!this.props.displayAsGroup
                                     ? (
                                         <ReportActionItemSingle action={this.props.action}>
@@ -187,6 +202,7 @@ class ReportActionItem extends Component {
                                 }
                                 draftMessage={this.props.draftMessage}
                             />
+
                         </View>
                     )}
                 </Hoverable>

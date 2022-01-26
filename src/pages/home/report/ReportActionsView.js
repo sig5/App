@@ -531,13 +531,13 @@ class ReportActionsView extends React.Component {
                 isMostRecentIOUReportAction={item.action.sequenceNumber === this.mostRecentIOUReportSequenceNumber}
                 hasOutstandingIOU={this.props.report.hasOutstandingIOU}
                 index={index}
+                report={this.props.report}
+
             />
         );
     }
 
     render() {
-        const isChatRoom = ReportUtils.isChatRoom(this.props.report);
-
         // Comments have not loaded at all yet do nothing
         if (!_.size(this.props.reportActions)) {
             return null;
