@@ -177,6 +177,8 @@ class IOUAmountPage extends React.Component {
             if (start === end && start > 0) {
                 return this.setState((prevState) => {
                     const amount = prevState.amount.slice(0, start - 1) + prevState.amount.slice(end);
+                    if (!this.validateAmount(amount)) { return prevState; }
+
                     const newStart = prevState.selection.start - 1;
                     const newEnd = prevState.selection.end - 1;
                     this.textInput.setNativeProps({
@@ -185,28 +187,34 @@ class IOUAmountPage extends React.Component {
                             end: newEnd,
                         },
                     });
-                    return this.validateAmount(amount) ? {
+                    return {
                         amount,
                         selection: {
                             start: newStart,
                             end: newEnd,
                         },
-                    } : prevState;
+                    };
                 });
             }
-
-            // Block updates need only change in amount
             return this.setState((prevState) => {
                 const amount = prevState.amount.slice(0, start) + prevState.amount.slice(end);
                 const newStart = prevState.selection.start;
                 const newEnd = prevState.selection.start;
+                this.textInput.setNativeProps({
+                    selection: {
+                        start: newStart,
+                        end: newEnd,
+                    },
+                });
                 return {selection: {start: newStart, end: newEnd}, amount};
             });
         }
-        this.setState((prevState) => {
+
+        return this.setState((prevState) => {
             const amount = `${prevState.amount.slice(0, start)}${key}${prevState.amount.slice(end)}`;
             const newStart = prevState.selection.start + 1;
-            const newEnd = prevState.selection.end + 1;
+            const newEnd = prevState.selection.start + 1;
+            if (!this.validateAmount(amount)) { return prevState; }
 
             this.textInput.setNativeProps({
                 selection: {
@@ -214,13 +222,13 @@ class IOUAmountPage extends React.Component {
                     end: newEnd,
                 },
             });
-            return this.validateAmount(amount) ? {
+            return {
                 amount: this.stripCommaFromAmount(amount),
                 selection: {
                     start: newStart,
                     end: newEnd,
                 },
-            } : prevState;
+            };
         });
     }
 
