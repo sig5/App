@@ -158,12 +158,11 @@ class IOUAmountPage extends React.Component {
         return amount.replace(/,/g, '');
     }
 
-
     /**
      * Update amount with number or Backspace pressed for BigNumberPad.
      * Validate new amount with decimal number regex up to 6 digits and 2 decimal digit to enable Next button
-     *
      * @param {String} key
+     * @returns {String}
      */
     updateAmountNumberPad(key) {
         // Backspace button is pressed
@@ -174,46 +173,53 @@ class IOUAmountPage extends React.Component {
             if (end === 0) {
                 return;
             }
-            const amount = start === end
-                ? this.state.amount.slice(0, start - 1) + this.state.amount.slice(end)
-                : this.state.amount.slice(0, start) + this.state.amount.slice(end);
-
-            if (!this.validateAmount(amount)) {
-                return;
-            }
 
             if (start === end && start > 0) {
-                this.setState(prevState => ({
-                    amount,
-                    selection: {
-                        start: prevState.selection.start - 1,
-                        end: prevState.selection.end - 1,
-                    },
-                }));
-            } else {
-                this.setState(prevState => ({
-                    amount,
-                    selection: {
-                        start: prevState.selection.start,
-                        end: prevState.selection.end,
-                    },
-                }));
+                return this.setState((prevState) => {
+                    const amount = prevState.amount.slice(0, start - 1) + prevState.amount.slice(end);
+                    const newStart = prevState.selection.start - 1;
+                    const newEnd = prevState.selection.end - 1;
+                    this.textInput.setNativeProps({
+                        selection: {
+                            start: newStart,
+                            end: newEnd,
+                        },
+                    });
+                    return this.validateAmount(amount) ? {
+                        amount,
+                        selection: {
+                            start: newStart,
+                            end: newEnd,
+                        },
+                    } : prevState;
+                });
             }
-        } else {
-            this.setState((prevState) => {
-                const amount = `${prevState.amount.slice(0, start)}${key}${prevState.amount.slice(end)}`;
-                return this.validateAmount(amount) ? {
-                    amount: this.stripCommaFromAmount(amount),
-                    selection: {
-                        start: prevState.selection.start + 1,
-                        end: prevState.selection.end + 1,
-                    },
-                } : prevState;
+
+            // Block updates need only change in amount
+            return this.setState((prevState) => {
+                const amount = prevState.amount.slice(0, start) + prevState.amount.slice(end);
+                return {amount};
             });
         }
+        this.setState((prevState) => {
+            const amount = `${prevState.amount.slice(0, start)}${key}${prevState.amount.slice(end)}`;
+            const newStart = prevState.selection.start + 1;
+            const newEnd = prevState.selection.end + 1;
 
-        // Update selection of the Native element.
-        this.textInput.setNativeProps({selection: this.state.selection});
+            this.textInput.setNativeProps({
+                selection: {
+                    start: newStart,
+                    end: newEnd,
+                },
+            });
+            return this.validateAmount(amount) ? {
+                amount: this.stripCommaFromAmount(amount),
+                selection: {
+                    start: newStart,
+                    end: newEnd,
+                },
+            } : prevState;
+        });
     }
 
     /**
