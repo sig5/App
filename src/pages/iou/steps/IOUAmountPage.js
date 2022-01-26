@@ -81,8 +81,8 @@ class IOUAmountPage extends React.Component {
         this.onSelectionChange = this.onSelectionChange.bind(this);
         this.state = {
             amount: props.selectedAmount,
-            selection: {start: props.selectedAmount.length, end: props.selectedAmount.length},
         };
+        this.selection = {start: props.selectedAmount.length, end: props.selectedAmount.length},
     }
 
     componentDidMount() {
@@ -102,7 +102,8 @@ class IOUAmountPage extends React.Component {
      * @param {*} e
      */
     onSelectionChange(e) {
-        this.setState({selection: e.nativeEvent.selection});
+        //this.setState({selection: e.nativeEvent.selection});
+        this.selection = e.nativeEvent.selection;
     }
 
     /**
@@ -166,7 +167,7 @@ class IOUAmountPage extends React.Component {
      */
     updateAmountNumberPad(key) {
         // Backspace button is pressed
-        const {start, end} = this.state.selection;
+        const {start, end} = this.selection;
 
         // Backspace button is pressed
         if (key === '<' || (key === 'Backspace' && this.state.amount.length > 0)) {
@@ -187,12 +188,12 @@ class IOUAmountPage extends React.Component {
                             end: newEnd,
                         },
                     });
+                    this.selection = {
+                        start: newStart,
+                        end: newEnd,
+                    };
                     return {
                         amount,
-                        selection: {
-                            start: newStart,
-                            end: newEnd,
-                        },
                     };
                 });
             }
@@ -206,7 +207,11 @@ class IOUAmountPage extends React.Component {
                         end: newEnd,
                     },
                 });
-                return {selection: {start: newStart, end: newEnd}, amount};
+                this.selection = {
+                    start: newStart,
+                    end: newEnd,
+                };
+                return { amount};
             });
         }
 
@@ -222,12 +227,12 @@ class IOUAmountPage extends React.Component {
                     end: newEnd,
                 },
             });
+            this.selection = {
+                start: newStart,
+                end: newEnd,
+            };
             return {
                 amount: this.stripCommaFromAmount(amount),
-                selection: {
-                    start: newStart,
-                    end: newEnd,
-                },
             };
         });
     }
