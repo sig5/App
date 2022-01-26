@@ -1204,6 +1204,12 @@ const styles = {
         paddingLeft: 20,
         paddingRight: 20,
     },
+    chatContentCreated: {
+        paddingTop: 16,
+        paddingBottom: 16,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
 
     // Chat Item
     chatItem: {

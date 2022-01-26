@@ -126,7 +126,7 @@ class ReportActionItem extends Component {
                     isMostRecentIOUReportAction={this.props.isMostRecentIOUReportAction}
                 />
             );
-        } else {
+        } else if (this.props.action.actionName === CONST.REPORT.ACTIONS.TYPE.ADDCOMMENT) {
             children = !this.props.draftMessage
                 ? <ReportActionItemMessage action={this.props.action} />
                 : (
@@ -138,6 +138,8 @@ class ReportActionItem extends Component {
                             ref={el => this.textInput = el}
                     />
                 );
+        } else {
+            children = <ReportActionItemCreated/>
         }
         return (
             <PressableWithSecondaryInteraction
