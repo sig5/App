@@ -1,6 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
+import {withOnyx} from 'react-native-onyx';
 import PropTypes from 'prop-types';
+import ONYXKEYS from '../../../ONYXKEYS';
+import compose from '../../../libs/compose';
 import RoomHeaderAvatars from '../../../components/RoomHeaderAvatars';
 import ReportWelcomeText from '../../../components/ReportWelcomeText';
 import * as ReportUtils from '../../../libs/reportUtils';
@@ -33,4 +36,9 @@ const ReportActionItemCreated = (props) => {
 ReportActionItemCreated.defaultProps = defaultProps;
 ReportActionItemCreated.propTypes = propTypes;
 
-export default ReportActionItemCreated;
+
+export default withOnyx({
+    report: {
+        key: ({reportID}) => `${ONYXKEYS.COLLECTION.REPORT}${reportID}`,
+    },
+})(ReportActionItemCreated);

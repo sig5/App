@@ -59,8 +59,6 @@ const propTypes = {
         /** Whether there is an outstanding amount in IOU */
         hasOutstandingIOU: PropTypes.bool,
 
-        /** Icons for room header and headerview */
-        icons: PropTypes.arrayOf(PropTypes.string),
     }),
 
     /** Array of report actions for this report */
@@ -530,9 +528,8 @@ class ReportActionsView extends React.Component {
                 displayAsGroup={this.isConsecutiveActionMadeByPreviousActor(index)}
                 shouldDisplayNewIndicator={shouldDisplayNewIndicator}
                 isMostRecentIOUReportAction={item.action.sequenceNumber === this.mostRecentIOUReportSequenceNumber}
+                hasOutstandingIOU={this.props.report.hasOutstandingIOU}
                 index={index}
-                report={this.props.report}
-
             />
         );
     }
