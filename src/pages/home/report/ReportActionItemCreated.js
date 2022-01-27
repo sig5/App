@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native-web';
+import {View} from 'react-native';
 import PropTypes from 'prop-types';
 import EmptyStateAvatars from '../../../components/EmptyStateAvatars';
 import ReportWelcomeText from '../../../components/ReportWelcomeText';
