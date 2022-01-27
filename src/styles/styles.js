@@ -1773,7 +1773,7 @@ const styles = {
         height: 80,
     },
 
-    emptyStateAvatar: {
+    roomHeaderAvatar: {
         height: variables.componentSizeLarge,
         width: variables.componentSizeLarge,
         borderRadius: 100,

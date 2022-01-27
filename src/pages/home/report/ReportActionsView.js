@@ -33,9 +33,7 @@ import PopoverReportActionContextMenu from './ContextMenu/PopoverReportActionCon
 import variables from '../../../styles/variables';
 import MarkerBadge from './MarkerBadge';
 import Performance from '../../../libs/Performance';
-import EmptyStateAvatars from '../../../components/EmptyStateAvatars';
 import * as ReportUtils from '../../../libs/reportUtils';
-import ReportWelcomeText from '../../../components/ReportWelcomeText';
 import ONYXKEYS from '../../../ONYXKEYS';
 import {withPersonalDetails} from '../../../components/OnyxProvider';
 import currentUserPersonalDetailsPropsTypes from '../../settings/Profile/currentUserPersonalDetailsPropsTypes';
@@ -529,7 +527,6 @@ class ReportActionsView extends React.Component {
                 displayAsGroup={this.isConsecutiveActionMadeByPreviousActor(index)}
                 shouldDisplayNewIndicator={shouldDisplayNewIndicator}
                 isMostRecentIOUReportAction={item.action.sequenceNumber === this.mostRecentIOUReportSequenceNumber}
-                hasOutstandingIOU={this.props.report.hasOutstandingIOU}
                 index={index}
                 report={this.props.report}
 

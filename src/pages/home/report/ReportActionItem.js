@@ -39,8 +39,19 @@ const propTypes = {
     /** Is this the most recent IOU Action? */
     isMostRecentIOUReportAction: PropTypes.bool.isRequired,
 
-    /** Whether there is an outstanding amount in IOU */
-    hasOutstandingIOU: PropTypes.bool,
+    report: PropTypes.shape({
+        /** Number of actions unread */
+        unreadActionCount: PropTypes.number,
+
+        /** The largest sequenceNumber on this report */
+        maxSequenceNumber: PropTypes.number,
+
+        /** The current position of the new marker */
+        newMarkerSequenceNumber: PropTypes.number,
+
+        /** Whether there is an outstanding amount in IOU */
+        hasOutstandingIOU: PropTypes.bool,
+    }),
 
     /** Should we display the new indicator on top of the comment? */
     shouldDisplayNewIndicator: PropTypes.bool.isRequired,
@@ -56,7 +67,7 @@ const propTypes = {
 
 const defaultProps = {
     draftMessage: '',
-    hasOutstandingIOU: false,
+    report: {},
 };
 
 class ReportActionItem extends Component {
@@ -74,7 +85,7 @@ class ReportActionItem extends Component {
         return this.props.displayAsGroup !== nextProps.displayAsGroup
             || this.props.draftMessage !== nextProps.draftMessage
             || this.props.isMostRecentIOUReportAction !== nextProps.isMostRecentIOUReportAction
-            || this.props.hasOutstandingIOU !== nextProps.hasOutstandingIOU
+            || this.props.report.hasOutstandingIOU !== nextProps.report.hasOutstandingIOU
             || this.props.shouldDisplayNewIndicator !== nextProps.shouldDisplayNewIndicator
             || !_.isEqual(this.props.action, nextProps.action)
             || this.state.isContextMenuActive !== nextState.isContextMenuActive;
@@ -118,19 +129,11 @@ class ReportActionItem extends Component {
     }
 
     render() {
-        const isChatRoom = ReportUtils.isChatRoom(this.props.report);
-
         if (this.props.action.actionName === CONST.REPORT.ACTIONS.TYPE.CREATED) {
             return (
-                <View
-                    style={StyleUtils.getReportActionItemStyle(
-                    )}
-                >
-                    <ReportActionItemCreated
-                        report={this.props.report}
-                        isChatRoom={isChatRoom}
-                    />
-                </View>
+                <ReportActionItemCreated
+                    report={this.props.report}
+                />
             );
         }
 
