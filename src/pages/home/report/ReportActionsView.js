@@ -58,6 +58,9 @@ const propTypes = {
 
         /** Whether there is an outstanding amount in IOU */
         hasOutstandingIOU: PropTypes.bool,
+
+        /** Icons for room header and headerview */
+        icons: PropTypes.arrayOf(PropTypes.string),
     }),
 
     /** Array of report actions for this report */

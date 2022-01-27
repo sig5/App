@@ -51,6 +51,9 @@ const propTypes = {
 
         /** Whether there is an outstanding amount in IOU */
         hasOutstandingIOU: PropTypes.bool,
+
+        /** Icons for room header and headerview */
+        icons: PropTypes.arrayOf(PropTypes.string),
     }),
 
     /** Should we display the new indicator on top of the comment? */
@@ -159,7 +162,6 @@ class ReportActionItem extends Component {
                     />
                 );
         }
-
         return (
             <PressableWithSecondaryInteraction
                 ref={el => this.popoverAnchor = el}
@@ -182,7 +184,6 @@ class ReportActionItem extends Component {
                                     || this.props.draftMessage,
                                 )}
                             >
-
                                 {!this.props.displayAsGroup
                                     ? (
                                         <ReportActionItemSingle action={this.props.action}>
@@ -207,7 +208,6 @@ class ReportActionItem extends Component {
                                 }
                                 draftMessage={this.props.draftMessage}
                             />
-
                         </View>
                     )}
                 </Hoverable>
