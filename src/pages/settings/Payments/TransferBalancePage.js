@@ -3,6 +3,7 @@ import React from 'react';
 import {View, ScrollView} from 'react-native';
 import PropTypes from 'prop-types';
 import {withOnyx} from 'react-native-onyx';
+import lodashGet from 'lodash/get';
 import ONYXKEYS from '../../../ONYXKEYS';
 import HeaderWithCloseButton from '../../../components/HeaderWithCloseButton';
 import ScreenWrapper from '../../../components/ScreenWrapper';
@@ -23,14 +24,13 @@ import walletTransferPropTypes from './walletTransferPropTypes';
 import * as PaymentMethods from '../../../libs/actions/PaymentMethods';
 import * as PaymentUtils from '../../../libs/PaymentUtils';
 import userWalletPropTypes from '../../EnablePayments/userWalletPropTypes';
-import ROUTES from '../../../ROUTES';
 
 const propTypes = {
     /** User's wallet information */
     userWallet: userWalletPropTypes.userWallet,
 
-    /** List of bank accounts */
-    bankAccountList: PropTypes.objectOf(PropTypes.shape({
+    /** Array of bank account objects */
+    bankAccountList: PropTypes.arrayOf(PropTypes.shape({
         /** The name of the institution (bank of america, etc) */
         addressName: PropTypes.string,
 
@@ -44,8 +44,8 @@ const propTypes = {
         type: PropTypes.string,
     })),
 
-    /** List of card objects */
-    cardList: PropTypes.objectOf(PropTypes.shape({
+    /** Array of card objects */
+    cardList: PropTypes.arrayOf(PropTypes.shape({
         /** The name of the institution (bank of america, etc) */
         cardName: PropTypes.string,
 
@@ -64,8 +64,8 @@ const propTypes = {
 
 const defaultProps = {
     userWallet: {},
-    bankAccountList: {},
-    cardList: {},
+    bankAccountList: [],
+    cardList: [],
     walletTransfer: {},
 };
 
@@ -96,19 +96,9 @@ class TransferBalancePage extends React.Component {
             },
         ];
 
-        PaymentMethods.resetWalletTransferData();
+        this.saveTransferAmountAndBalance = this.saveTransferAmountAndBalance.bind(this);
         const selectedAccount = this.getSelectedPaymentMethodAccount();
-
-        // Select the default payment account when page is opened,
-        // so that user can see that preselected on choose transfer account page
-        if (!selectedAccount || !selectedAccount.isDefault) {
-            return;
-        }
-
-        PaymentMethods.saveWalletTransferAccountTypeAndID(
-            selectedAccount.accountType,
-            selectedAccount.methodID,
-        );
+        PaymentMethods.saveWalletTransferAccountAndResetData(selectedAccount ? selectedAccount.id : '');
     }
 
     /**
@@ -119,39 +109,24 @@ class TransferBalancePage extends React.Component {
         const paymentMethods = PaymentUtils.formatPaymentMethods(
             this.props.bankAccountList,
             this.props.cardList,
-            '',
-            this.props.userWallet,
         );
 
-        const defaultAccount = _.find(paymentMethods, method => method.isDefault);
-        const selectedAccount = _.find(
-            paymentMethods,
-            method => method.accountType === this.props.walletTransfer.selectedAccountType
-                && method.methodID === this.props.walletTransfer.selectedAccountID,
-        );
-        return selectedAccount || defaultAccount;
+        const accountID = this.props.walletTransfer.selectedAccountID || lodashGet(this.props, 'userWallet.walletLinkedAccountID', '');
+        return _.find(paymentMethods, method => method.methodID === accountID);
     }
 
     /**
      * @param {Number} transferAmount
      * @param {Object} selectedAccount
      */
-    saveTransferAmountAndStartTransfer(transferAmount, selectedAccount) {
+    saveTransferAmountAndBalance(transferAmount, selectedAccount) {
         PaymentMethods.saveWalletTransferAmount(transferAmount);
         PaymentMethods.transferWalletBalance(selectedAccount);
     }
 
-    /**
-     * @param {String} filterPaymentMethodType
-     */
-    navigateToChooseTransferAccount(filterPaymentMethodType) {
-        PaymentMethods.saveWalletTransferMethodType(filterPaymentMethodType);
-        Navigation.navigate(ROUTES.SETTINGS_PAYMENTS_CHOOSE_TRANSFER_ACCOUNT);
-    }
-
     render() {
         const selectedAccount = this.getSelectedPaymentMethodAccount();
-        const selectedPaymentType = selectedAccount && selectedAccount.accountType === CONST.PAYMENT_METHODS.BANK_ACCOUNT
+        const selectedPaymentType = selectedAccount && selectedAccount.type === CONST.PAYMENT_METHODS.BANK_ACCOUNT
             ? CONST.WALLET.TRANSFER_METHOD_TYPE.ACH
             : CONST.WALLET.TRANSFER_METHOD_TYPE.INSTANT;
 
@@ -189,7 +164,6 @@ class TransferBalancePage extends React.Component {
                                     ...(selectedPaymentType === paymentType.key
                                         && styles.transferBalanceSelectedPayment),
                                 }}
-                                onPress={() => this.navigateToChooseTransferAccount(paymentType.type)}
                             />
                         ))}
                         <Text
@@ -210,7 +184,6 @@ class TransferBalancePage extends React.Component {
                                         ...styles.mrn5,
                                         ...styles.ph0,
                                     }}
-                                    onPress={() => this.navigateToChooseTransferAccount(selectedAccount.accountType)}
                                 />
                             )}
                         <Text
@@ -225,7 +198,7 @@ class TransferBalancePage extends React.Component {
                             {this.props.translate('transferAmountPage.fee')}
                         </Text>
                         <Text
-                            style={[styles.justifyContentStart]}
+                            style={[styles.textLabel, styles.justifyContentStart]}
                         >
                             {this.props.numberFormat(
                                 calculatedFee / 100,
@@ -239,7 +212,7 @@ class TransferBalancePage extends React.Component {
                             pressOnEnter
                             isLoading={this.props.walletTransfer.loading}
                             isDisabled={isButtonDisabled}
-                            onPress={() => this.saveTransferAmountAndStartTransfer(transferAmount, selectedAccount)}
+                            onPress={() => this.saveTransferAmountAndBalance(transferAmount, selectedAccount)}
                             text={this.props.translate(
                                 'transferAmountPage.transfer',
                                 {

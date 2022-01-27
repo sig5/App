@@ -23,16 +23,12 @@ const propTypes = {
     /** Route for the KYC enable payments screen for a given navigation stack */
     enablePaymentsRoute: PropTypes.string.isRequired,
 
-    /** Where to place the popover */
-    popoverPlacement: PropTypes.string,
-
     ...userWalletPropTypes,
 };
 
 const defaultProps = {
     // eslint-disable-next-line react/default-props-match-prop-types
     userWallet: {},
-    popoverPlacement: 'top',
 };
 
 // This component allows us to block various actions by forcing the user to first add a default payment method and successfully make it through our Know Your Customer flow
@@ -61,24 +57,6 @@ class KYCWall extends React.Component {
     }
 
     /**
-     * @param {DOMRect} domRect
-     * @returns {Object}
-     */
-    getAnchorPosition(domRect) {
-        if (this.props.popoverPlacement === 'bottom') {
-            return {
-                anchorPositionTop: domRect.top + (domRect.height - 2),
-                anchorPositionLeft: domRect.left + 20,
-            };
-        }
-
-        return {
-            anchorPositionTop: domRect.top - 150,
-            anchorPositionLeft: domRect.left,
-        };
-    }
-
-    /**
      * Take the position of the button that calls this method and show the Add Payment method menu when the user has no valid payment method.
      * If they do have a valid payment method they are navigated to the "enable payments" route to complete KYC checks.
      * If they are already KYC'd we will continue whatever action is gated behind the KYC wall.
@@ -90,11 +68,10 @@ class KYCWall extends React.Component {
         if (!PaymentUtils.hasExpensifyPaymentMethod(this.props.cardList, this.props.bankAccountList)) {
             Log.info('[KYC Wallet] User does not have valid payment method');
             const clickedElementLocation = getClickedElementLocation(event.nativeEvent);
-            const {anchorPositionTop, anchorPositionLeft} = this.getAnchorPosition(clickedElementLocation);
             this.setState({
                 shouldShowAddPaymentMenu: true,
-                anchorPositionTop,
-                anchorPositionLeft,
+                anchorPositionTop: clickedElementLocation.bottom - CONST.ADD_PAYMENT_MENU_POSITION_Y,
+                anchorPositionLeft: clickedElementLocation.right - CONST.ADD_PAYMENT_MENU_POSITION_X,
             });
             return;
         }

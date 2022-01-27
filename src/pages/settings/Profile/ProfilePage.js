@@ -161,10 +161,7 @@ class ProfilePage extends Component {
     }
 
     validateInputs() {
-        const [hasFirstNameError, hasLastNameError, hasPronounError] = ValidationUtils.doesFailCharacterLimit(
-            50,
-            [this.state.firstName.trim(), this.state.lastName.trim(), this.state.pronouns.trim()],
-        );
+        const [hasFirstNameError, hasLastNameError, hasPronounError] = ValidationUtils.doesFailCharacterLimit(50, [this.state.firstName, this.state.lastName, this.state.pronouns]);
         this.setState({
             hasFirstNameError,
             hasLastNameError,
@@ -180,7 +177,7 @@ class ProfilePage extends Component {
         }));
 
         // Determines if the pronouns/selected pronouns have changed
-        const arePronounsUnchanged = this.props.myPersonalDetails.pronouns === this.state.pronouns.trim();
+        const arePronounsUnchanged = this.props.myPersonalDetails.pronouns === this.state.pronouns;
 
         // Disables button if none of the form values have changed
         const isButtonDisabled = (this.props.myPersonalDetails.firstName === this.state.firstName.trim())

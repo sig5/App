@@ -56,10 +56,6 @@ export default {
                         path: ROUTES.SETTINGS_PAYMENTS,
                         exact: true,
                     },
-                    Settings_Payments_EnablePayments: {
-                        path: ROUTES.SETTINGS_ENABLE_PAYMENTS,
-                        exact: true,
-                    },
                     Settings_Payments_Transfer_Balance: {
                         path: ROUTES.SETTINGS_PAYMENTS_TRANSFER_BALANCE,
                         exact: true,

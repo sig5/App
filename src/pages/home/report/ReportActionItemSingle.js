@@ -29,16 +29,12 @@ const propTypes = {
     /** Children view component for this action item */
     children: PropTypes.node.isRequired,
 
-    /** Show header for action */
-    showHeader: PropTypes.bool,
-
     ...withLocalizePropTypes,
 };
 
 const defaultProps = {
     personalDetails: {},
     wrapperStyles: [styles.chatItem],
-    showHeader: true,
 };
 
 const showUserDetails = (email) => {
@@ -69,23 +65,21 @@ const ReportActionItemSingle = (props) => {
                 />
             </Pressable>
             <View style={[styles.chatItemRight]}>
-                {props.showHeader ? (
-                    <View style={[styles.chatItemMessageHeader]}>
-                        <Pressable style={[styles.flexShrink1]} onPress={() => showUserDetails(props.action.actorEmail)}>
-                            {_.map(personArray, (fragment, index) => (
-                                <ReportActionItemFragment
-                                    key={`person-${props.action.sequenceNumber}-${index}`}
-                                    fragment={fragment}
-                                    tooltipText={props.action.actorEmail}
-                                    isAttachment={props.action.isAttachment}
-                                    isLoading={props.action.loading}
-                                    isSingleLine
-                                />
-                            ))}
-                        </Pressable>
-                        <ReportActionItemDate timestamp={props.action.timestamp} />
-                    </View>
-                ) : null}
+                <View style={[styles.chatItemMessageHeader]}>
+                    <Pressable style={[styles.flexShrink1]} onPress={() => showUserDetails(props.action.actorEmail)}>
+                        {_.map(personArray, (fragment, index) => (
+                            <ReportActionItemFragment
+                                key={`person-${props.action.sequenceNumber}-${index}`}
+                                fragment={fragment}
+                                tooltipText={props.action.actorEmail}
+                                isAttachment={props.action.isAttachment}
+                                isLoading={props.action.loading}
+                                isSingleLine
+                            />
+                        ))}
+                    </Pressable>
+                    <ReportActionItemDate timestamp={props.action.timestamp} />
+                </View>
                 {props.children}
             </View>
         </View>

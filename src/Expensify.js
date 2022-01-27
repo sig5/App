@@ -127,10 +127,9 @@ class Expensify extends PureComponent {
             const shouldHideSplash = !this.isAuthenticated() || authStackReady;
 
             if (shouldHideSplash) {
-                BootSplash.hide();
-
-                // eslint-disable-next-line react/no-did-update-set-state
-                this.setState({isSplashShown: false});
+                BootSplash
+                    .hide({fade: true})
+                    .then(() => this.setState({isSplashShown: false}));
             }
         }
     }
@@ -164,8 +163,7 @@ class Expensify extends PureComponent {
         BootSplash
             .getVisibilityStatus()
             .then((status) => {
-                const appState = AppState.currentState;
-                Log.info('[BootSplash] splash screen status', false, {appState, status});
+                Log.info('[BootSplash] splash screen status', false, {status});
 
                 if (status === 'visible') {
                     const props = _.omit(this.props, ['children', 'session']);

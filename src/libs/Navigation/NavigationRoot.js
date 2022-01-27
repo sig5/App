@@ -7,15 +7,14 @@ import AppNavigator from './AppNavigator';
 import * as App from '../actions/App';
 import FullScreenLoadingIndicator from '../../components/FullscreenLoadingIndicator';
 import Log from '../Log';
-import colors from '../../styles/colors';
-import styles from '../../styles/styles';
+import themeColors from '../../styles/themes/default';
 
 // https://reactnavigation.org/docs/themes
 const navigationTheme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
-        background: colors.gray1,
+        background: themeColors.appBG,
     },
 };
 
@@ -57,7 +56,7 @@ class NavigationRoot extends Component {
     render() {
         return (
             <NavigationContainer
-                fallback={<FullScreenLoadingIndicator style={styles.navigatorFullScreenLoading} />}
+                fallback={<FullScreenLoadingIndicator />}
                 onStateChange={this.parseAndStoreRoute}
                 onReady={this.props.onReady}
                 theme={navigationTheme}
