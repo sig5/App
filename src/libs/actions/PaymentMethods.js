@@ -184,10 +184,10 @@ function clearDebitCardFormErrorAndSubmit() {
  * Call the API to transfer wallet balance.
  * @param {Object} paymentMethod
  * @param {*} paymentMethod.methodID
- * @param {String} paymentMethod.accountType
+ * @param {String} paymentMethod.type
  */
 function transferWalletBalance(paymentMethod) {
-    const paymentMethodIDKey = paymentMethod.accountType === CONST.PAYMENT_METHODS.BANK_ACCOUNT
+    const paymentMethodIDKey = paymentMethod.type === CONST.PAYMENT_METHODS.BANK_ACCOUNT
         ? CONST.PAYMENT_METHOD_ID_KEYS.BANK_ACCOUNT
         : CONST.PAYMENT_METHOD_ID_KEYS.DEBIT_CARD;
     const parameters = {
@@ -209,10 +209,13 @@ function transferWalletBalance(paymentMethod) {
         });
 }
 
-function resetWalletTransferData() {
+/**
+ * Set the transfer account and reset the transfer data for Wallet balance transfer
+ * @param {String} selectedAccountID
+ */
+function saveWalletTransferAccountAndResetData(selectedAccountID) {
     Onyx.merge(ONYXKEYS.WALLET_TRANSFER, {
-        selectedAccountType: '',
-        selectedAccountID: null,
+        selectedAccountID,
         filterPaymentMethodType: null,
         loading: false,
         shouldShowConfirmModal: false,
@@ -224,22 +227,6 @@ function resetWalletTransferData() {
  */
 function saveWalletTransferAmount(transferAmount) {
     Onyx.merge(ONYXKEYS.WALLET_TRANSFER, {transferAmount});
-}
-
-/**
- * @param {String} selectedAccountType
- * @param {String} selectedAccountID
- */
-function saveWalletTransferAccountTypeAndID(selectedAccountType, selectedAccountID) {
-    Onyx.merge(ONYXKEYS.WALLET_TRANSFER, {selectedAccountType, selectedAccountID});
-}
-
-/**
- * Toggles the user's selected type of payment method (bank account or debit card) on the wallet transfer balance screen.
- * @param {String} filterPaymentMethodType
- */
-function saveWalletTransferMethodType(filterPaymentMethodType) {
-    Onyx.merge(ONYXKEYS.WALLET_TRANSFER, {filterPaymentMethodType});
 }
 
 function dismissWalletConfirmModal() {
@@ -256,9 +243,7 @@ export {
     continueSetup,
     clearDebitCardFormErrorAndSubmit,
     transferWalletBalance,
-    resetWalletTransferData,
+    saveWalletTransferAccountAndResetData,
     saveWalletTransferAmount,
-    saveWalletTransferAccountTypeAndID,
-    saveWalletTransferMethodType,
     dismissWalletConfirmModal,
 };

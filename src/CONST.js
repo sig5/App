@@ -214,7 +214,6 @@ const CONST = {
                 IOU: 'IOU',
                 ADDCOMMENT: 'ADDCOMMENT',
                 CREATED: 'CREATED',
-                RENAMED: 'RENAMED',
             },
         },
         ERROR: {

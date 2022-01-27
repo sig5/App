@@ -341,11 +341,7 @@ class ReportActionsView extends React.Component {
             .sortBy('sequenceNumber')
             .filter(action => action.actionName === CONST.REPORT.ACTIONS.TYPE.IOU
                     || action.actionName === CONST.REPORT.ACTIONS.TYPE.ADDCOMMENT
-<<<<<<< HEAD
                     || action.actionName === CONST.REPORT.ACTIONS.TYPE.CREATED)
-=======
-                    || action.actionName === CONST.REPORT.ACTIONS.TYPE.RENAMED)
->>>>>>> 6356971b32c7b593ebcc2b768a65343607ebabbb
             .map((item, index) => ({action: item, index}))
             .value()
             .reverse();
@@ -374,12 +370,6 @@ class ReportActionsView extends React.Component {
 
         // Comments are only grouped if they happen within 5 minutes of each other
         if (currentAction.action.timestamp - previousAction.action.timestamp > 300) {
-            return false;
-        }
-
-        // Do not group if previous or current action was a renamed action
-        if (previousAction.action.actionName === CONST.REPORT.ACTIONS.TYPE.RENAMED
-            || currentAction.action.actionName === CONST.REPORT.ACTIONS.TYPE.RENAMED) {
             return false;
         }
 

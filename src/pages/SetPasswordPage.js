@@ -29,7 +29,7 @@ const propTypes = {
         /** An error message to display to the user */
         error: PropTypes.string,
 
-        /** Whether a sign on form is loading (being submitted) */
+        /** Whether or not a sign on form is loading (being submitted) */
         loading: PropTypes.bool,
     }),
 
@@ -48,15 +48,6 @@ const propTypes = {
         error: PropTypes.string,
     }),
 
-    /** User signup object */
-    userSignUp: PropTypes.shape({
-        /** Is Validating Email */
-        isValidating: PropTypes.bool,
-
-        /** Auth token used to change password */
-        authToken: PropTypes.string,
-    }),
-
     /** The accountID and validateCode are passed via the URL */
     route: validateLinkPropTypes,
 
@@ -69,11 +60,6 @@ const defaultProps = {
     route: validateLinkDefaultProps,
     session: {
         error: '',
-        authToken: '',
-    },
-    userSignUp: {
-        isValidating: false,
-        authToken: '',
     },
 };
 
@@ -89,27 +75,20 @@ class SetPasswordPage extends Component {
         };
     }
 
-    componentDidMount() {
+    /**
+     * Validate the form and then submit it
+     */
+    validateAndSubmitForm() {
         const accountID = lodashGet(this.props.route.params, 'accountID', '');
         const validateCode = lodashGet(this.props.route.params, 'validateCode', '');
-        if (this.props.userSignUp.authToken) {
-            return;
-        }
-        Session.validateEmail(accountID, validateCode);
-    }
-
-    validateAndSubmitForm() {
         if (!this.state.isFormValid) {
             return;
         }
-        const accountID = lodashGet(this.props.route.params, 'accountID', '');
-        const validateCode = lodashGet(this.props.route.params, 'validateCode', '');
-        Session.setOrChangePassword(accountID, validateCode, this.state.password, this.props.userSignUp.authToken);
+
+        Session.validateEmail(accountID, validateCode, this.state.password);
     }
 
-
     render() {
-        const buttonText = this.props.userSignUp.isValidating ? this.props.translate('setPasswordPage.verifyingAccount') : this.props.translate('setPasswordPage.setPassword');
         const sessionError = this.props.session.error && this.props.translate(this.props.session.error);
         const error = sessionError || this.props.account.error;
         return (
@@ -118,29 +97,29 @@ class SetPasswordPage extends Component {
                     shouldShowWelcomeText
                     welcomeText={this.props.translate('setPasswordPage.passwordFormTitle')}
                 >
-                    {_.isEmpty(error) ? (
-                        <>
-                            <View style={[styles.mb4]}>
-                                <NewPasswordForm
-                                    password={this.state.password}
-                                    updatePassword={password => this.setState({password})}
-                                    updateIsFormValid={isValid => this.setState({isFormValid: isValid})}
-                                    onSubmitEditing={this.validateAndSubmitForm}
-                                />
-                            </View>
-                            <View>
-                                <Button
-                                    success
-                                    style={[styles.mb2]}
-                                    text={buttonText}
-                                    isLoading={this.props.account.loading || this.props.userSignUp.isValidatingEmail}
-                                    onPress={this.validateAndSubmitForm}
-                                    isDisabled={!this.state.isFormValid}
-                                />
-                            </View>
-                        </>
-                    )
-                        : (<Text>{error}</Text>)}
+                    <View style={[styles.mb4]}>
+                        <NewPasswordForm
+                            password={this.state.password}
+                            updatePassword={password => this.setState({password})}
+                            updateIsFormValid={isValid => this.setState({isFormValid: isValid})}
+                            onSubmitEditing={this.validateAndSubmitForm}
+                        />
+                    </View>
+                    <View>
+                        <Button
+                            success
+                            style={[styles.mb2]}
+                            text={this.props.translate('setPasswordPage.setPassword')}
+                            isLoading={this.props.account.loading}
+                            onPress={this.validateAndSubmitForm}
+                            isDisabled={!this.state.isFormValid}
+                        />
+                    </View>
+                    {!_.isEmpty(error) && (
+                        <Text style={[styles.formError]}>
+                            {error}
+                        </Text>
+                    )}
                 </SignInPageLayout>
             </SafeAreaView>
         );
@@ -159,6 +138,5 @@ export default compose(
             key: ONYXKEYS.SESSION,
             initWithStoredValues: false,
         },
-        userSignUp: {key: ONYXKEYS.USER_SIGN_UP},
     }),
 )(SetPasswordPage);

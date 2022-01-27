@@ -375,24 +375,6 @@ function getMiniReportActionContextMenuWrapperStyle(isReportActionItemGrouped) {
     };
 }
 
-/**
- * @param {Boolean} isSmallScreenWidth
- * @returns {Object}
- */
-function getPaymentMethodMenuWidth(isSmallScreenWidth) {
-    const margin = 20;
-    return {width: !isSmallScreenWidth ? variables.sideBarWidth - (margin * 2) : undefined};
-}
-
-/**
- * Parse styleParam and return Styles array
- * @param {Object|Object[]} styleParam
- * @returns {Object[]}
- */
-function parseStyleAsArray(styleParam) {
-    return _.isArray(styleParam) ? styleParam : [styleParam];
-}
-
 export {
     getSafeAreaPadding,
     getSafeAreaMargins,
@@ -415,6 +397,4 @@ export {
     getLoginPagePromoStyle,
     getReportActionItemStyle,
     getMiniReportActionContextMenuWrapperStyle,
-    getPaymentMethodMenuWidth,
-    parseStyleAsArray,
 };

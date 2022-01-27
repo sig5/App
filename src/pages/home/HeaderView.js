@@ -144,7 +144,7 @@ const HeaderView = (props) => {
                                     displayNamesWithTooltips={displayNamesWithTooltips}
                                     tooltipEnabled
                                     numberOfLines={1}
-                                    textStyles={[styles.headerText, styles.textNoWrap]}
+                                    textStyles={[styles.headerText]}
                                     shouldUseFullTitle={isChatRoom}
                                 />
                                 {isChatRoom && (

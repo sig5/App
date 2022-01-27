@@ -29,15 +29,15 @@ const propTypes = {
     /** Are we loading payment methods? */
     isLoadingPaymentMethods: PropTypes.bool,
 
-    /** List of bank accounts */
-    bankAccountList: PropTypes.objectOf(bankAccountPropTypes),
+    /** Array of bank account objects */
+    bankAccountList: PropTypes.arrayOf(bankAccountPropTypes),
 
     ...withLocalizePropTypes,
 };
 
 const defaultProps = {
     isLoadingPaymentMethods: true,
-    bankAccountList: {},
+    bankAccountList: [],
 };
 
 class EnableStep extends React.Component {

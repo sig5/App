@@ -274,10 +274,6 @@ const styles = {
         textTransform: 'uppercase',
     },
 
-    textNoWrap: {
-        ...whiteSpace.noWrap,
-    },
-
     colorReversed: {
         color: themeColors.textReversed,
     },
@@ -682,13 +678,8 @@ const styles = {
     textInputDesktop: addOutlineWidth({}, 0),
 
     secureInputEyeButton: {
-        paddingHorizontal: 11,
+        paddingRight: 11,
         justifyContent: 'center',
-    },
-
-    secureInput: {
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
     },
 
     textInput: {
@@ -1613,10 +1604,6 @@ const styles = {
         borderColor: themeColors.border,
     },
 
-    pointerEventsNone: {
-        pointerEvents: 'none',
-    },
-
     headerBar: {
         overflow: 'hidden',
         justifyContent: 'center',
@@ -2040,11 +2027,6 @@ const styles = {
         zIndex: 10,
     },
 
-    navigatorFullScreenLoading: {
-        backgroundColor: colors.gray1,
-        opacity: 1,
-    },
-
     reimbursementAccountFullScreenLoading: {
         backgroundColor: themeColors.componentBG,
         opacity: 0.8,
@@ -2416,7 +2398,7 @@ const styles = {
         backgroundColor: themeColors.componentBG,
     },
     transferBalancePayment: {
-        borderWidth: 1,
+        borderWidth: 2,
         borderRadius: variables.componentBorderRadiusNormal,
         borderColor: themeColors.border,
     },
