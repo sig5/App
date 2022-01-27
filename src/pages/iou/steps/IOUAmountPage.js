@@ -160,6 +160,14 @@ class IOUAmountPage extends React.Component {
         return amount.replace(/,/g, '');
     }
 
+    /**
+     * Returns new value of Selection and Amount
+     *
+     * @param {String} amount - Current amount in prevState
+     * @param {String} key -Key pressed
+     * @returns {Object}
+     */
+
     calculateAmountAndSelection(key, amount) {
         const {start, end} = this.selection;
 
@@ -179,7 +187,7 @@ class IOUAmountPage extends React.Component {
         }
         const newAmount = `${amount.slice(0, start)}${key}${amount.slice(end)}`;
 
-        if (!this.validateAmount(amount)) {
+        if (!this.validateAmount(newAmount)) {
             return {amount, selection: this.selection};
         }
 
@@ -193,9 +201,11 @@ class IOUAmountPage extends React.Component {
      * @returns {String}
      */
     updateAmountNumberPad(key) {
-        // Backspace button is pressed
         return this.setState((prevState) => {
             const {amount, selection} = this.calculateAmountAndSelection(key, prevState.amount);
+            this.selection = selection;
+
+            // Update UI to reflect selection changes.
             this.textInput.setNativeProps({selection});
             return {amount};
         });
