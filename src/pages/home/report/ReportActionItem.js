@@ -118,9 +118,9 @@ class ReportActionItem extends Component {
     }
 
     render() {
-        const isRoomHeader = (this.props.action.actionName === CONST.REPORT.ACTIONS.TYPE.CREATED);
-        if (isRoomHeader) {
-            const isChatRoom = ReportUtils.isChatRoom(this.props.report);
+        const isChatRoom = ReportUtils.isChatRoom(this.props.report);
+
+        if (this.props.action.actionName === CONST.REPORT.ACTIONS.TYPE.CREATED) {
             return (
                 <View
                     style={StyleUtils.getReportActionItemStyle(
@@ -133,6 +133,7 @@ class ReportActionItem extends Component {
                 </View>
             );
         }
+
         let children;
         if (this.props.action.actionName === CONST.REPORT.ACTIONS.TYPE.IOU) {
             children = (
@@ -155,6 +156,7 @@ class ReportActionItem extends Component {
                     />
                 );
         }
+
         return (
             <PressableWithSecondaryInteraction
                 ref={el => this.popoverAnchor = el}
