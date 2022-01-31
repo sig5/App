@@ -111,9 +111,9 @@ const IOUPreview = (props) => {
     const ownerName = lodashGet(props.personalDetails, [ownerEmail, 'firstName'], '') || Str.removeSMSDomain(ownerEmail);
     const managerAvatar = lodashGet(props.personalDetails, [managerEmail, 'avatar'], '');
     const ownerAvatar = lodashGet(props.personalDetails, [ownerEmail, 'avatar'], '');
-    const cachedTotal = props.iouReport.total && props.iouReport.currency
+    const absoluteCachedTotal = props.iouReport.total && props.iouReport.currency
         ? props.numberFormat(
-            props.iouReport.total / 100,
+            Math.abs(props.iouReport.total) / 100,
             {style: 'currency', currency: props.iouReport.currency},
         ) : '';
     return (
@@ -127,7 +127,7 @@ const IOUPreview = (props) => {
                                 <View style={styles.flex1}>
                                     <View style={styles.flexRow}>
                                         <Text style={styles.h1}>
-                                            {cachedTotal}
+                                            {absoluteCachedTotal}
                                         </Text>
                                         {!props.iouReport.hasOutstandingIOU && (
                                             <View style={styles.iouPreviewBoxCheckmark}>
