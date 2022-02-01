@@ -80,7 +80,7 @@ class IOUAmountPage extends React.Component {
         this.focusTextInput = this.focusTextInput.bind(this);
         this.onSelectionChange = this.onSelectionChange.bind(this);
         this.calculateAmountAndSelection = this.calculateAmountAndSelection.bind(this);
-        this.amount = props.selectedAmount.length;
+        this.amount = props.selectedAmount;
         this.selection = {
             start: props.selectedAmount.length,
             end: props.selectedAmount.length,
@@ -184,7 +184,7 @@ class IOUAmountPage extends React.Component {
                     return {amount, selection: this.selection};
                 }
 
-                return {amount: newAmount, selection: {start: start - 1, end: end - 1}};
+                return {amount: newAmount, selection: {start: start - 1, end: start - 1}};
             }
             const newAmount = amount.slice(0, start) + amount.slice(end);
             return {amount: newAmount, selection: {start, end: start}};
@@ -207,11 +207,13 @@ class IOUAmountPage extends React.Component {
      */
     updateAmountNumberPad(key) {
         const {amount, selection} = this.calculateAmountAndSelection(key, this.amount);
+        console.log(selection);
         this.selection = selection;
         this.amount = amount;
 
         // Update UI to reflect selection changes.
-        this.textInput.setNativeProps({selection, text: amount});
+        this.textInput.setNativeProps({text: amount});
+        this.textInput.setNativeProps({selection});
         return {amount};
     }
 
@@ -222,12 +224,8 @@ class IOUAmountPage extends React.Component {
      * @param {String} text - Changed text from user input
      */
     updateAmount(text) {
-        this.setState((prevState) => {
-            const amount = this.replaceAllDigits(text, this.props.fromLocaleDigit);
-            return this.validateAmount(amount)
-                ? {amount: this.stripCommaFromAmount(amount)}
-                : prevState;
-        });
+        const amount = this.replaceAllDigits(text, this.props.fromLocaleDigit);
+        this.amount = amount;
     }
 
     /**
@@ -252,7 +250,7 @@ class IOUAmountPage extends React.Component {
     }
 
     render() {
-        const formattedAmount = this.replaceAllDigits(this.amount, this.props.toLocaleDigit);
+        //const formattedAmount = this.replaceAllDigits(this.amount, this.props.toLocaleDigit);
         return (
             <>
                 <View style={[
