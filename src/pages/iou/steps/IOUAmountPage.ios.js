@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unused-state */
 import React from 'react';
 import {
     View,
@@ -81,12 +80,10 @@ class IOUAmountPage extends React.Component {
         this.focusTextInput = this.focusTextInput.bind(this);
         this.onSelectionChange = this.onSelectionChange.bind(this);
         this.calculateAmountAndSelection = this.calculateAmountAndSelection.bind(this);
-        this.state = {
-            amount: props.selectedAmount,
-            selection: {
-                start: props.selectedAmount.length,
-                end: props.selectedAmount.length,
-            },
+        this.amount = props.selectedAmount.length;
+        this.selection = {
+            start: props.selectedAmount.length,
+            end: props.selectedAmount.length,
         };
     }
 
@@ -107,7 +104,7 @@ class IOUAmountPage extends React.Component {
      * @param {*} e
      */
     onSelectionChange(e) {
-        this.setState({selection: e.nativeEvent.selection});
+        this.selection = e.nativeEvent.selection;
     }
 
     /**
@@ -171,21 +168,20 @@ class IOUAmountPage extends React.Component {
      * @returns {Object}
      */
 
-    calculateAmountAndSelection(key, prevState) {
-        const {start, end} = prevState.selection;
-        const amount = prevState.amount;
+    calculateAmountAndSelection(key, amount) {
+        const {start, end} = this.selection;
 
         // Backspace button is pressed
-        if (key === '<' || (key === 'Backspace' && this.state.amount.length > 0)) {
+        if (key === '<' || (key === 'Backspace' && this.amount.length > 0)) {
             if (end === 0) {
-                return {amount, selection: prevState.selection};
+                return {amount, selection: this.selection};
             }
 
             if (start === end && start > 0) {
                 const newAmount = amount.slice(0, start - 1) + amount.slice(end);
 
                 if (!this.validateAmount(newAmount)) {
-                    return {amount, selection: prevState.selection};
+                    return {amount, selection: this.selection};
                 }
 
                 return {amount: newAmount, selection: {start: start - 1, end: end - 1}};
@@ -197,7 +193,7 @@ class IOUAmountPage extends React.Component {
         // Normal Keys
         const newAmount = `${amount.slice(0, start)}${key}${amount.slice(end)}`;
         if (!this.validateAmount(newAmount)) {
-            return {amount, selection: prevState.selection};
+            return {amount, selection: this.selection};
         }
 
         return {amount: newAmount, selection: {start: start + 1, end: start + 1}};
@@ -210,10 +206,13 @@ class IOUAmountPage extends React.Component {
      * @returns {String}
      */
     updateAmountNumberPad(key) {
-        return this.setState((prevState) => {
-            const {amount, selection} = this.calculateAmountAndSelection(key, prevState);
-            return {amount, selection};
-        });
+        const {amount, selection} = this.calculateAmountAndSelection(key, this.amount);
+        this.selection = selection;
+        this.amount = amount;
+
+        // Update UI to reflect selection changes.
+        this.textInput.setNativeProps({selection, text: amount});
+        return {amount};
     }
 
     /**
@@ -253,7 +252,7 @@ class IOUAmountPage extends React.Component {
     }
 
     render() {
-        const formattedAmount = this.replaceAllDigits(this.state.amount, this.props.toLocaleDigit);
+        const formattedAmount = this.replaceAllDigits(this.amount, this.props.toLocaleDigit);
         return (
             <>
                 <View style={[
@@ -277,7 +276,6 @@ class IOUAmountPage extends React.Component {
                         textStyle={styles.iouAmountText}
                         onChangeText={this.updateAmount}
                         ref={el => this.textInput = el}
-                        value={formattedAmount}
                         placeholder={this.props.numberFormat(0)}
                         keyboardType={CONST.KEYBOARD_TYPE.NUMBER_PAD}
                         onSelectionChange={this.onSelectionChange}
@@ -294,9 +292,9 @@ class IOUAmountPage extends React.Component {
                     <Button
                         success
                         style={[styles.w100, styles.mt5]}
-                        onPress={() => this.props.onStepComplete(this.state.amount)}
+                        onPress={() => this.props.onStepComplete(this.amount)}
                         pressOnEnter
-                        isDisabled={!this.state.amount.length || parseFloat(this.state.amount) < 0.01}
+                        isDisabled={!this.amount.length || parseFloat(this.amount) < 0.01}
                         text={this.props.translate('common.next')}
                     />
                 </View>
