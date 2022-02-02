@@ -80,10 +80,10 @@ class IOUAmountPage extends React.Component {
         this.focusTextInput = this.focusTextInput.bind(this);
         this.onSelectionChange = this.onSelectionChange.bind(this);
         this.calculateAmountAndSelection = this.calculateAmountAndSelection.bind(this);
-        this.amount = props.selectedAmount;
+        this.amount = '';
         this.selection = {
-            start: props.selectedAmount.length,
-            end: props.selectedAmount.length,
+            start: 0,
+            end: 0,
         };
     }
 
@@ -169,8 +169,7 @@ class IOUAmountPage extends React.Component {
      */
 
     calculateAmountAndSelection(key, amount) {
-        const {start, end} = this.selection;
-
+        let {start, end} = this.selection;
         // Backspace button is pressed
         if (key === '<' || (key === 'Backspace' && this.amount.length > 0)) {
             if (end === 0) {
@@ -207,13 +206,17 @@ class IOUAmountPage extends React.Component {
      */
     updateAmountNumberPad(key) {
         const {amount, selection} = this.calculateAmountAndSelection(key, this.amount);
-        console.log(selection);
+        //console.log(selection);
         this.selection = selection;
         this.amount = amount;
 
         // Update UI to reflect selection changes.
         this.textInput.setNativeProps({text: amount});
-        this.textInput.setNativeProps({selection});
+        //console.log(amount.length)
+        //if(key =='1')
+        console.log(this.selection.start-1,this.selection.end-1);
+        this.textInput.setNativeProps({selection:{start:this.selection.start-1,end:this.selection.end-1}});
+        //else this.textInput.setNativeProps({selection:{start:1,end:1}});
         return {amount};
     }
 
