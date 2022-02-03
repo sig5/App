@@ -83,10 +83,7 @@ class IOUAmountPage extends React.Component {
         this.state = {
             amount: props.selectedAmount,
         };
-        this.selection = {
-            start: props.selectedAmount.length,
-            end: props.selectedAmount.length,
-        };
+        this.selection = undefined;
     }
 
     componentDidMount() {
@@ -171,6 +168,8 @@ class IOUAmountPage extends React.Component {
      */
 
     calculateAmountAndSelection(key, amount) {
+        if(this.selection===undefined)
+        return {amount:(amount+key),selection:this.selection};
         const {start, end} = this.selection;
 
         // Backspace button is pressed
@@ -210,9 +209,11 @@ class IOUAmountPage extends React.Component {
     updateAmountNumberPad(key) {
         return this.setState((prevState) => {
             const {amount, selection} = this.calculateAmountAndSelection(key, prevState.amount);
+            if(this.selection === undefined)
             this.selection = selection;
 
             // Update UI to reflect selection changes.
+            if(this.selection)
             this.textInput.setNativeProps({selection});
             return {amount};
         });
