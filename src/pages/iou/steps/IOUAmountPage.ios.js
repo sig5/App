@@ -80,9 +80,7 @@ class IOUAmountPage extends React.Component {
         this.focusTextInput = this.focusTextInput.bind(this);
         this.onSelectionChange = this.onSelectionChange.bind(this);
         this.calculateAmountAndSelection = this.calculateAmountAndSelection.bind(this);
-        this.state = {
-            amount: props.selectedAmount,
-        };
+        this.amount = '';
         this.selection = undefined;
     }
 
@@ -168,12 +166,10 @@ class IOUAmountPage extends React.Component {
      */
 
     calculateAmountAndSelection(key, amount) {
-        if(this.selection === undefined && key === '<')
-        return {amount:(amount+key),selection:this.selection};
         const {start, end} = this.selection;
 
         // Backspace button is pressed
-        if (key === '<' || (key === 'Backspace' && this.state.amount.length > 0)) {
+        if (key === '<' || (key === 'Backspace' && this.amount.length > 0)) {
             if (end === 0) {
                 return {amount, selection: this.selection};
             }
@@ -185,13 +181,11 @@ class IOUAmountPage extends React.Component {
                     return {amount, selection: this.selection};
                 }
 
-                return {amount: newAmount, selection: {start: start - 1, end: end - 1}};
+                return {amount: newAmount, selection: {start: start - 1, end: start - 1}};
             }
             const newAmount = amount.slice(0, start) + amount.slice(end);
             return {amount: newAmount, selection: {start, end: start}};
         }
-        if(this.selection === undefined)
-        return {amount:(amount.substr(0,amount.length-1)),selection:this.selection};
 
         // Normal Keys
         const newAmount = `${amount.slice(0, start)}${key}${amount.slice(end)}`;
@@ -209,16 +203,22 @@ class IOUAmountPage extends React.Component {
      * @returns {String}
      */
     updateAmountNumberPad(key) {
-        return this.setState((prevState) => {
-            const {amount, selection} = this.calculateAmountAndSelection(key, prevState.amount);
-            if(this.selection === undefined)
-            this.selection = selection;
+        const {amount, selection} = this.calculateAmountAndSelection(key, this.amount);
 
-            // Update UI to reflect selection changes.
-            if(this.selection)
-            this.textInput.setNativeProps({selection});
-            return {amount};
-        });
+        // console.log(selection);
+        if (this.selection) { this.selection = selection; }
+        this.amount = amount;
+
+        // Update UI to reflect selection changes.
+        this.textInput.setNativeProps({text: amount});
+
+        // console.log(amount.length)
+        // if(key =='1')
+        console.log(this.selection.start - 1, this.selection.end - 1);
+        if (this.selection) { this.textInput.setNativeProps({selection}); }
+
+        // else this.textInput.setNativeProps({selection:{start:1,end:1}});
+        return {amount};
     }
 
     /**
@@ -228,12 +228,8 @@ class IOUAmountPage extends React.Component {
      * @param {String} text - Changed text from user input
      */
     updateAmount(text) {
-        this.setState((prevState) => {
-            const amount = this.replaceAllDigits(text, this.props.fromLocaleDigit);
-            return this.validateAmount(amount)
-                ? {amount: this.stripCommaFromAmount(amount)}
-                : prevState;
-        });
+        const amount = this.replaceAllDigits(text, this.props.fromLocaleDigit);
+        this.amount = amount;
     }
 
     /**
@@ -258,7 +254,7 @@ class IOUAmountPage extends React.Component {
     }
 
     render() {
-        const formattedAmount = this.replaceAllDigits(this.state.amount, this.props.toLocaleDigit);
+        // const formattedAmount = this.replaceAllDigits(this.amount, this.props.toLocaleDigit);
         return (
             <>
                 <View style={[
@@ -282,7 +278,6 @@ class IOUAmountPage extends React.Component {
                         textStyle={styles.iouAmountText}
                         onChangeText={this.updateAmount}
                         ref={el => this.textInput = el}
-                        value={formattedAmount}
                         placeholder={this.props.numberFormat(0)}
                         keyboardType={CONST.KEYBOARD_TYPE.NUMBER_PAD}
                         onSelectionChange={this.onSelectionChange}
@@ -299,9 +294,9 @@ class IOUAmountPage extends React.Component {
                     <Button
                         success
                         style={[styles.w100, styles.mt5]}
-                        onPress={() => this.props.onStepComplete(this.state.amount)}
+                        onPress={() => this.props.onStepComplete(this.amount)}
                         pressOnEnter
-                        isDisabled={!this.state.amount.length || parseFloat(this.state.amount) < 0.01}
+                        isDisabled={!this.amount.length || parseFloat(this.amount) < 0.01}
                         text={this.props.translate('common.next')}
                     />
                 </View>
