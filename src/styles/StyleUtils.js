@@ -150,7 +150,7 @@ function getZoomSizingStyle(isZoomed, imgWidth, imgHeight, zoomScale, containerH
  */
 function getAutoGrowTextInputStyle(width) {
     return {
-        minWidth: 5,
+        minWidth: 150,
         width,
     };
 }
