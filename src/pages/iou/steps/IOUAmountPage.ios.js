@@ -168,7 +168,7 @@ class IOUAmountPage extends React.Component {
      */
 
     calculateAmountAndSelection(key, amount) {
-        if(this.selection===undefined)
+        if(this.selection === undefined && key === '<')
         return {amount:(amount+key),selection:this.selection};
         const {start, end} = this.selection;
 
@@ -190,6 +190,8 @@ class IOUAmountPage extends React.Component {
             const newAmount = amount.slice(0, start) + amount.slice(end);
             return {amount: newAmount, selection: {start, end: start}};
         }
+        if(this.selection === undefined)
+        return {amount:(amount.substr(0,amount.length-1)),selection:this.selection};
 
         // Normal Keys
         const newAmount = `${amount.slice(0, start)}${key}${amount.slice(end)}`;
