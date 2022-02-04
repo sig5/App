@@ -82,6 +82,7 @@ class CompanyStep extends React.Component {
             website: 'bankAccount.error.website',
             companyTaxID: 'bankAccount.error.taxID',
             incorporationDate: 'bankAccount.error.incorporationDate',
+            incorporationState: 'bankAccount.error.incorporationState',
             incorporationDateFuture: 'bankAccount.error.incorporationDateFuture',
             incorporationType: 'bankAccount.error.companyType',
             hasNoConnectionToCannabis: 'bankAccount.error.restrictedBusiness',
@@ -289,7 +290,7 @@ class CompanyStep extends React.Component {
                             label={this.props.translate('companyStep.incorporationState')}
                             onChange={value => this.clearErrorAndSetValue('incorporationState', value)}
                             value={this.state.incorporationState}
-                            
+                            errorText={this.getErrorText('incorporationState')}
                         />
                     </View>
                     <CheckboxWithLabel

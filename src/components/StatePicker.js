@@ -35,6 +35,8 @@ const propTypes = {
     /** Saves a draft of the input value when used in a form */
     shouldSaveDraft: PropTypes.bool,
 
+    errorText: PropTypes.bool,
+
     ...withLocalizePropTypes,
 };
 
@@ -43,6 +45,7 @@ const defaultProps = {
     value: '',
     isFormInput: false,
     shouldSaveDraft: false,
+    errorText: '',
 };
 
 const StatePicker = props => (
