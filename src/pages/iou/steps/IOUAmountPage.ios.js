@@ -279,6 +279,7 @@ class IOUAmountPage extends React.Component {
                         onChangeText={this.updateAmount}
                         ref={el => this.textInput = el}
                         value={formattedAmount}
+                        selection={this.state.selection}
                         placeholder={this.props.numberFormat(0)}
                         keyboardType={CONST.KEYBOARD_TYPE.NUMBER_PAD}
                         onSelectionChange={this.onSelectionChange}
