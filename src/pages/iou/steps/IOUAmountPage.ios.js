@@ -212,6 +212,7 @@ class IOUAmountPage extends React.Component {
     updateAmountNumberPad(key) {
         return this.setState((prevState) => {
             const {amount, selection} = this.calculateAmountAndSelection(key, prevState);
+            console.log(selection);
             return {amount, selection};
         });
     }
