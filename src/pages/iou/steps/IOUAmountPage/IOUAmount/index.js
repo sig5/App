@@ -18,6 +18,7 @@ import Text from '../../../../../components/Text';
 import CONST from '../../../../../CONST';
 import TextInputAutoWidthWithoutKeyboard from '../../../../../components/TextInputAutoWidthWithoutKeyboard';
 import {propTypes, defaultProps} from './IOUAmountPropTypes';
+import canUseTouchScreen from '../../../../../libs/canUseTouchscreen';
 
 class IOUAmount extends React.Component {
     constructor(props) {
@@ -121,7 +122,7 @@ class IOUAmount extends React.Component {
                     />
                 </View>
                 <View style={[styles.w100, styles.justifyContentEnd]}>
-                    {this.props.isSmallScreenWidth
+                    {canUseTouchScreen
                         ? (
                             <BigNumberPad
                                 numberPressed={this.updateAmountNumberPad}

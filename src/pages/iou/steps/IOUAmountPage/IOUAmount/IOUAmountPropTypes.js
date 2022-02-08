@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import {windowDimensionsPropTypes} from '../../../../../components/withWindowDimensions';
 import {withLocalizePropTypes} from '../../../../../components/withLocalize';
 import CONST from '../../../../../CONST';
 
@@ -28,8 +27,6 @@ const propTypes = {
     /** Previously selected amount to show if the user comes back to this screen */
     selectedAmount: PropTypes.string.isRequired,
 
-    /** Window Dimensions Props */
-    ...windowDimensionsPropTypes,
 
     /* Onyx Props */
 
