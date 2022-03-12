@@ -67,6 +67,7 @@ class IOUAmountPage extends React.Component {
                 updateAmount={this.updateAmount}
                 updateAmountNumberPad={this.updateAmountNumberPad}
                 onSelectionChange={this.onSelectionChange}
+                ref={el => this.textInput = el}
                 // eslint-disable-next-line react/jsx-props-no-spreading
                 {...this.props}
             />

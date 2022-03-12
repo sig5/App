@@ -114,7 +114,6 @@ class IOUAmountInput extends React.Component {
                         disableKeyboard
                         autoGrow
                         hideFocusedState
-                        isValueControlled={this.props.isValueControlled}
                         inputStyle={[styles.iouAmountTextInput, styles.p0, styles.noLeftBorderRadius, styles.noRightBorderRadius]}
                         textInputContainerStyles={[styles.borderNone, styles.noLeftBorderRadius, styles.noRightBorderRadius]}
                         onChangeText={this.props.updateAmount}
