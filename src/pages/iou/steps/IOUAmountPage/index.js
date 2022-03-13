@@ -40,8 +40,8 @@ class IOUAmountPage extends React.Component {
             this.selection = selection;
 
             // Update UI to reflect selection changes.
-            this.textInput.setNativeProps({selection});
-            return {amount};
+            //this.textInput.setNativeProps({selection});
+            return {amount, selection};
         });
     }
 
