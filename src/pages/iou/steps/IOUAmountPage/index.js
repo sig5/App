@@ -40,8 +40,8 @@ class IOUAmountPage extends React.Component {
             this.selection = selection;
 
             // Update UI to reflect selection changes.
-            //this.textInput.setNativeProps({selection});
-            return {amount, selection};
+            this.textInput.setNativeProps({selection});
+            return {amount};
         });
     }
 
@@ -54,9 +54,11 @@ class IOUAmountPage extends React.Component {
     updateAmount(text) {
         this.setState((prevState) => {
             const amount = IOUAmountUtils.replaceAllDigits(text, this.props.fromLocaleDigit);
-            return IOUAmountUtils.validateAmount(amount)
-                ? {amount: IOUAmountUtils.stripCommaFromAmount(amount)}
-                : prevState;
+            if (IOUAmountUtils.validateAmount(amount)) {
+                return {amount: IOUAmountUtils.stripCommaFromAmount(amount)};
+            }
+            this.textInput.setNativeProps({text: prevState.amount});
+            return prevState;
         });
     }
 
@@ -67,6 +69,7 @@ class IOUAmountPage extends React.Component {
                 updateAmount={this.updateAmount}
                 updateAmountNumberPad={this.updateAmountNumberPad}
                 onSelectionChange={this.onSelectionChange}
+                ref={el => this.textInput = el}
                 // eslint-disable-next-line react/jsx-props-no-spreading
                 {...this.props}
             />

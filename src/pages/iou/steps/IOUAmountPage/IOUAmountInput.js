@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {
     View,
     TouchableOpacity,
@@ -118,7 +118,10 @@ class IOUAmountInput extends React.Component {
                         inputStyle={[styles.iouAmountTextInput, styles.p0, styles.noLeftBorderRadius, styles.noRightBorderRadius]}
                         textInputContainerStyles={[styles.borderNone, styles.noLeftBorderRadius, styles.noRightBorderRadius]}
                         onChangeText={this.props.updateAmount}
-                        ref={el => this.textInput = el}
+                        ref={(el) => {
+                            this.textInput = el;
+                            if (this.props.forwardedRef) { this.props.forwardedRef(el); }
+                        }}
                         value={formattedAmount}
                         placeholder={this.props.numberFormat(0)}
                         keyboardType={CONST.KEYBOARD_TYPE.NUMBER_PAD}
@@ -157,4 +160,10 @@ export default compose(
         currencyList: {key: ONYXKEYS.CURRENCY_LIST},
         iou: {key: ONYXKEYS.IOU},
     }),
-)(IOUAmountInput);
+)(forwardRef((props, ref) => (
+    <IOUAmountInput
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...props}
+        forwardedRef={ref}
+    />
+)));
