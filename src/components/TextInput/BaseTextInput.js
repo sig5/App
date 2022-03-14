@@ -68,7 +68,7 @@ class BaseTextInput extends Component {
 
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({value: this.props.value});
-        if (this.props.isValueControlled) {
+        if (!this.props.isValueControlled) {
             this.input.setNativeProps({text: this.props.value});
         }
 
